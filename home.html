@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f4ee">
+    <title>Staywell | Find your next stay</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #28c798;
+            --muted: #23da66;
+            --paper: #f6f4ee;
+            --white: #fffefa;
+            --green: #6cd1a3;
+            --green-dark: #244737;
+            --orange: #f1885b;
+            --line: #e5e2d8;
+            font-family: "Aptos", "Segoe UI", sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--paper); }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        a { color: inherit; }
+        .topbar {
+            height: 76px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 6.5%; border-bottom: 1px solid var(--line); background: var(--white);
+        }
+        .brand { font-family: Georgia, serif; font-size: 27px; font-weight: 700; letter-spacing: 0; text-decoration: none; }
+        .brand span { color: var(--orange); }
+        .top-actions { display: flex; align-items: center; gap: 12px; }
+        .quiet-button, .cart-button {
+            min-height: 42px; border: 1px solid var(--line); border-radius: 3px; background: transparent;
+            color: var(--ink); padding: 0 15px; font-weight: 650;
+        }
+        .quiet-button:hover, .cart-button:hover { border-color: var(--green); }
+        .cart-button { background: var(--green); border-color: var(--green); color: white; }
+        .cart-count { display: inline-grid; place-items: center; margin-left: 7px; width: 21px; height: 21px; border-radius: 50%; background: white; color: var(--green); font-size: 12px; }
+        .hero {
+            min-height: 440px; display: grid; align-items: end; padding: 70px 8% 58px;
+            background: linear-gradient(90deg, rgba(19, 31, 27, .78), rgba(19, 31, 27, .12)), url("hotel-room-with-city-view-comfort-and-relaxation-for-urban-traveler-free-photo.jpg") center 52% / cover;
+            color: white;
+        }
+        .hero-copy { max-width: 690px; }
+        .eyebrow { margin: 0 0 15px; color: #f1c8a9; text-transform: uppercase; letter-spacing: 1.5px; font-size: 12px; font-weight: 750; }
+        h1 { max-width: 620px; margin: 0; font: 500 clamp(42px, 6vw, 70px)/1.03 Georgia, serif; letter-spacing: 0; }
+        .hero p { max-width: 520px; margin: 19px 0 0; color: #f2f1ec; font-size: 17px; line-height: 1.65; }
+        main { max-width: 1200px; margin: 0 auto; padding: 45px 28px 80px; }
+        .list-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
+        .list-heading h2 { margin: 0 0 6px; font: 500 34px/1.1 Georgia, serif; }
+        .list-heading p { margin: 0; color: var(--muted); }
+        .live-location { display: flex; align-items: center; gap: 9px; min-height: 43px; padding: 0 13px; color: var(--green-dark); border: 1px solid #bdcbbf; border-radius: 3px; background: #f1f4ed; font-weight: 650; white-space: nowrap; }
+        .live-location:hover { background: #e7eee5; }
+        .pin { width: 9px; height: 9px; border: 2px solid currentColor; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); }
+        .location-note { min-height: 19px; margin: -12px 0 18px; color: var(--muted); text-align: right; font-size: 13px; }
+        .hotel-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
+        .hotel-card { display: grid; grid-template-columns: minmax(170px, 40%) 1fr; min-height: 220px; overflow: hidden; border: 1px solid var(--line); border-radius: 4px; background: var(--white); }
+        .hotel-photo { width: 100%; height: 100%; min-height: 220px; object-fit: cover; }
+        .hotel-info { display: flex; flex-direction: column; padding: 18px 18px 15px; }
+        .hotel-type { color: var(--orange); text-transform: uppercase; letter-spacing: 1.1px; font-size: 10px; font-weight: 800; }
+        .hotel-info h3 { margin: 7px 0 5px; font: 500 23px/1.1 Georgia, serif; }
+        .hotel-location { margin: 0; color: var(--muted); font-size: 13px; }
+        .hotel-description { margin: 11px 0; color: #4e5953; font-size: 13px; line-height: 1.45; }
+        .hotel-bottom { display: flex; align-items: end; justify-content: space-between; gap: 8px; margin-top: auto; }
+        .price { font-size: 19px; font-weight: 750; white-space: nowrap; }
+        .price small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 400; }
+        .card-actions { display: flex; gap: 7px; }
+        .visit-button, .add-button { min-height: 36px; padding: 0 11px; border: 1px solid var(--line); border-radius: 3px; background: transparent; color: var(--ink); font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; }
+        .visit-button:hover { border-color: var(--green); color: var(--green-dark); }
+        .add-button { background: var(--green); border-color: var(--green); color: white; }
+        .add-button:hover { background: var(--green-dark); }
+        .cart-backdrop { position: fixed; inset: 0; z-index: 3; background: rgba(20, 29, 25, .35); opacity: 0; visibility: hidden; }
+        .cart-backdrop.open { opacity: 1; visibility: visible; }
+        .cart-panel { position: fixed; z-index: 4; top: 0; right: 0; display: flex; flex-direction: column; width: min(420px, 100%); height: 100dvh; padding: 24px; background: var(--white); box-shadow: -12px 0 35px rgba(27, 36, 30, .14); transform: translateX(102%); }
+        .cart-panel.open { transform: translateX(0); }
+        .cart-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 19px; border-bottom: 1px solid var(--line); }
+        .cart-header h2 { margin: 0; font: 500 29px Georgia, serif; }
+        .close-cart { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 3px; background: transparent; font-size: 22px; }
+        .cart-items { flex: 1; overflow: auto; padding: 8px 0; }
+        .empty-cart { margin-top: 25px; color: var(--muted); line-height: 1.6; }
+        .cart-item { display: flex; justify-content: space-between; gap: 14px; padding: 17px 0; border-bottom: 1px solid var(--line); }
+        .cart-item h3 { margin: 0 0 5px; font: 500 18px Georgia, serif; }
+        .cart-item p { margin: 0; color: var(--muted); font-size: 13px; }
+        .remove-item { margin-top: 9px; padding: 0; border: 0; background: none; color: #9a513a; font-size: 12px; text-decoration: underline; }
+        .cart-item-price { white-space: nowrap; font-weight: 700; }
+        .cart-footer { padding-top: 18px; border-top: 1px solid var(--line); }
+        .cart-total { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 750; }
+        .checkout-button { width: 100%; min-height: 47px; border: 0; border-radius: 3px; background: var(--green); color: white; font-weight: 750; }
+        .checkout-button:disabled { cursor: not-allowed; background: #a9b5ad; }
+        .notice { position: fixed; z-index: 5; left: 50%; bottom: 22px; max-width: calc(100% - 30px); padding: 12px 18px; border-radius: 3px; background: var(--ink); color: white; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+        .notice.show { opacity: 1; transform: translate(-50%, 0); }
+        @media (max-width: 800px) { .hotel-list { grid-template-columns: 1fr; } .hotel-card { grid-template-columns: 34% 1fr; } }
+        @media (max-width: 560px) {
+            .topbar { height: 65px; padding: 0 17px; }
+            .brand { font-size: 24px; }
+            .quiet-button, .cart-button { min-height: 39px; padding: 0 10px; font-size: 12px; }
+            .hero { min-height: 390px; padding: 50px 23px 40px; background-position: 58% center; }
+            .hero p { font-size: 15px; }
+            main { padding: 34px 16px 55px; }
+            .list-heading { align-items: start; flex-direction: column; gap: 14px; }
+            .list-heading h2 { font-size: 30px; }
+            .location-note { text-align: left; margin: -6px 0 16px; }
+            .hotel-card { grid-template-columns: 1fr; }
+            .hotel-photo { height: 190px; min-height: 190px; }
+            .hotel-info { min-height: 210px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="#top" aria-label="Staywell home">staywell<span>.</span></a>
+        <div class="top-actions">
+         <button class="cart-button" id="openCart" type="button" aria-controls="cartPanel" aria-expanded="false">My stays <span class="cart-count" id="cartCount">0</span></button>
+        </div>
+    </header>
+    <section class="hero" id="top">
+        <div class="hero-copy">
+        <p class="eyebrow">Thoughtful stays, chosen for you</p>
+                    <h1>Find a place that feels like somewhere.</h1>
+        <p>Five memorable stays, ready for your next escape. Explore each one, then save your favorite to your trip.</p>
+        </div>
+    </section>
+    <main>
+        <div class="list-heading">
+            <div><h2>Places to stay</h2><p>Handpicked hotels for a better kind of getaway.</p></div>
+        </div>
+        <section class="hotel-list" id="hotelList" aria-label="Available hotels"></section>
+    </main>
+    <div class="cart-backdrop" id="cartBackdrop"></div>
+    <aside class="cart-panel" id="cartPanel" aria-label="Your saved stays" aria-hidden="true">
+        <div class="cart-header"><h2>Your stays</h2><button class="close-cart" id="closeCart" type="button" aria-label="Close cart">×</button></div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer"><div class="cart-total"><span>Estimated total / night</span><span id="cartTotal">$0</span></div><button class="checkout-button" id="checkout" type="button" disabled>Continue to booking</button></div>
+    </aside>
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    <script>
+        const hotels = [
+            { id: 1, name: "The Laurel House", kind: "Boutique · Garden", city: "Portland, Oregon", address: "The Laurel House Hotel, Portland, Oregon", price: 189, image: "images (1).jfif", description: "A leafy hideaway with thoughtful rooms and a neighborhood feel." },
+            { id: 2, name: "Harborlight Hotel", kind: "Waterfront · Design", city: "Seattle, Washington", address: "Harborlight Hotel, Seattle, Washington", price: 245, image: "hotel-room-with-city-view-comfort-and-relaxation-for-urban-traveler-free-photo.jpg", description: "Wake up to the water, then wander to the city's best coffee." },
+            { id: 3, name: "Casa Solana", kind: "Riad · Rooftop", city: "Santa Fe, New Mexico", address: "Casa Solana Hotel, Santa Fe, New Mexico", price: 215, image: "images (2).jfif", description: "Quiet courtyards, warm adobe textures, and a rooftop at dusk." },
+            { id: 4, name: "The Alder & Stone", kind: "Country house · Spa", city: "Hudson Valley, New York", address: "Alder and Stone Hotel, Hudson Valley, New York", price: 278, image: "images.jfif", description: "A slow-living escape tucked among trees and open fields." },
+            { id: 5, name: "Cypress Cove", kind: "Coastal · Retreat", city: "Big Sur, California", address: "Cypress Cove Hotel, Big Sur, California", price: 329, image: "hotel-room-with-city-view-comfort-and-relaxation-for-urban-traveler-free-photo.jpg", description: "A coastal retreat made for long views and unhurried mornings." }
+        ];
+        const cart = new Set();
+        let noticeTimer;
+
+        const hotelList = document.getElementById("hotelList");
+        const cartPanel = document.getElementById("cartPanel");
+        const cartBackdrop = document.getElementById("cartBackdrop");
+
+        function showNotice(message) {
+            const notice = document.getElementById("notice");
+            notice.textContent = message;
+            notice.classList.add("show");
+            clearTimeout(noticeTimer);
+            noticeTimer = setTimeout(() => notice.classList.remove("show"), 2800);
+        }
+
+        function renderHotels() {
+            hotelList.innerHTML = hotels.map((hotel) => {
+                const saved = cart.has(hotel.id);
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotel.address)}`;
+                return `<article class="hotel-card">
+                <img class="hotel-photo" src="${hotel.image}" alt="A welcoming room at ${hotel.name}" loading="lazy">
+            <div class="hotel-info">
+             <span class="hotel-type">${hotel.kind}</span>
+             <h3>${hotel.name}</h3>
+                        <p class="hotel-location">${hotel.city}</p>
+                        <p class="hotel-description">${hotel.description}</p>
+                        <div class="hotel-bottom">
+         <div class="price">$${hotel.price}<small>per night</small></div>
+                            <div class="card-actions">
+                     <a class="visit-button" href="${mapUrl}" target="_blank" rel="noopener noreferrer">Visit</a>
+                    <button class="add-button" type="button" data-hotel-id="${hotel.id}" aria-pressed="${saved}">${saved ? "Added" : "Add to trip"}</button>
+                         </div>
+                        </div>
+                </div>
+                </article>`;
+            }).join("");
+        }
+
+        function renderCart() {
+            const items = hotels.filter((hotel) => cart.has(hotel.id));
+            document.getElementById("cartCount").textContent = items.length;
+            document.getElementById("cartItems").innerHTML = items.length ? items.map((hotel) => `
+            <div class="cart-item">
+            <div><h3>${hotel.name}</h3><p>${hotel.city} · per night</p><button class="remove-item" type="button" data-remove-id="${hotel.id}">Remove</button></div>
+             <span class="cart-item-price">$${hotel.price}</span>
+             </div>`).join("") : `<p class="empty-cart">Your trip is empty for now. Add a stay to keep it close.</p>`;
+            document.getElementById("cartTotal").textContent = `$${items.reduce((sum, hotel) => sum + hotel.price, 0)}`;
+            document.getElementById("checkout").disabled = items.length === 0;
+            renderHotels();
+        }
+
+        function setCartOpen(open) {
+            cartPanel.classList.toggle("open", open);
+            cartBackdrop.classList.toggle("open", open);
+            cartPanel.setAttribute("aria-hidden", String(!open));
+            document.getElementById("openCart").setAttribute("aria-expanded", String(open));
+        }
+
+        hotelList.addEventListener("click", (event) => {
+            const button = event.target.closest("[data-hotel-id]");
+            if (!button) return;
+            const hotelId = Number(button.dataset.hotelId);
+            if (cart.has(hotelId)) cart.delete(hotelId); else cart.add(hotelId);
+            renderCart();
+            showNotice(cart.has(hotelId) ? "Stay added to your trip." : "Stay removed from your trip.");
+        });
+        document.getElementById("cartItems").addEventListener("click", (event) => {
+            const button = event.target.closest("[data-remove-id]");
+            if (!button) return;
+            cart.delete(Number(button.dataset.removeId));
+            renderCart();
+        });
+        document.getElementById("openCart").addEventListener("click", () => setCartOpen(true));
+        document.getElementById("closeCart").addEventListener("click", () => setCartOpen(false));
+        cartBackdrop.addEventListener("click", () => setCartOpen(false));
+        document.getElementById("checkout").addEventListener("click", () => {
+            if (cart.size) showNotice("Your stays are saved. Booking checkout needs a reservation service.");
+        });
+        document.addEventListener("keydown", (event) => { if (event.key === "Escape") setCartOpen(false); });
+        renderCart();
+    </script>
+</body>
+</html>
